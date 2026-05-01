@@ -6,12 +6,16 @@ from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
 from transaction.external_income_transaction import ExternalFreelanceIncome
+from command.command import CommandManager, ApplyTransactionCommand
 
 
 def main():
     print("Adding transactions...")
    
     # TODO: Create balance and add observers
+    balance = Balance.get_instance()
+    balance.register_observer(LowBalanceAlertObserver(100))
+    balance.register_observer(PrintObserver())
 
     # Create standard transactions
     transactions = [
@@ -21,6 +25,7 @@ def main():
         Transaction(75, TransactionCategory.EXPENSE),
     ]
 
+
     # Create an external income transaction (via Adapter pattern)
     freelance_income = ExternalFreelanceIncome(1200, "INV-98765", "Mobile App Project")
     adapter = TransactionAdapter(freelance_income)
@@ -28,7 +33,15 @@ def main():
 
     all_transactions = transactions + [adapted_transaction]
 
+    remote = CommandManager()
+
     # TODO: Apply all transactions to balance
+    for transaction in all_transactions:
+        remote.execute_command(ApplyTransactionCommand(balance, transaction))
+    
+    # Demosntrate undo capability (Final balance $175)
+    remote.undo_last()                                                                                                                                                        
+    print(balance.summary()) 
 
 if __name__ == "__main__":
     main()
