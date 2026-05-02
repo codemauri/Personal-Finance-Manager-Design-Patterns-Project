@@ -1,6 +1,6 @@
 from balance.balance import Balance
 from abc import ABC, abstractmethod
-from transaction import transaction
+from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 
 # Step 1: Command interface
@@ -16,7 +16,7 @@ class Command(ABC):
 # Step 2: Concrete Commands
 class ApplyTransactionCommand(Command):
     # DONE: Implement constructor and execute
-    def __init__(self, balance: Balance, transaction: transaction):
+    def __init__(self, balance: Balance, transaction: Transaction):
         self.balance = balance
         self.transaction = transaction
         
@@ -25,9 +25,11 @@ class ApplyTransactionCommand(Command):
     
     def undo(self):
         if self.transaction.category == TransactionCategory.INCOME:
-            self.balance.add_expense(self.transaction.amount)
+            transaction = Transaction(self.transaction.amount, TransactionCategory.EXPENSE)
+            self.balance.apply_transaction(transaction)
         elif self.transaction.category == TransactionCategory.EXPENSE:
-            self.balance.add_income(self.transaction.amount)
+            transaction = Transaction(self.transaction.amount, TransactionCategory.INCOME)
+            self.balance.apply_transaction(transaction)
 
 # Invoker
 class CommandManager:

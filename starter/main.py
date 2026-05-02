@@ -12,7 +12,6 @@ from command.command import CommandManager, ApplyTransactionCommand
 def main():
     print("Adding transactions...")
    
-    # TODO: Create balance and add observers
     balance = Balance.get_instance()
     balance.register_observer(LowBalanceAlertObserver(100))
     balance.register_observer(PrintObserver())
@@ -35,7 +34,7 @@ def main():
 
     remote = CommandManager()
 
-    # TODO: Apply all transactions to balance
+    
     for transaction in all_transactions:
         remote.execute_command(ApplyTransactionCommand(balance, transaction))
     

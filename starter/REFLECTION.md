@@ -12,9 +12,11 @@ ExternalFreelanceIncome is a third-party object with a different structure — i
 
 Without the Observer pattern, notification logic would live directly inside `apply_transaction`, tightly coupling the Balance class to every dependent object. Adding or removing dependents would require modifying the subject, and as the system grows, this dependency web becomes fragile and prone to break. The Observer pattern decouples business logic (Balance) from notification logic (PrintObserver, LowBalanceAlertObserver). Multiple observers can subscribe to the subject and receive broadcasts when it changes. We can add or remove observers without modifying the Balance class at all.
 
-## Command (CommandManager + ApplyTransactionCommand)
+## Command (CommandManager + ApplyTransactionCommand) — Student's Choice
 
 Calling `apply_transaction` directly couples the caller to the implementation. The Command pattern encapsulates each request as a self-contained object, turning an action and its receiver into an independent unit. The invoker (CommandManager) triggers commands without knowing implementation details. This supports undo/redo operations, command history, and queueing — capabilities that would be difficult to retrofit into direct method calls. In this project, `CommandManager.undo_last()` demonstrates reversing the last transaction with no changes to the Balance class.
+
+**Implementation:** `command/command.py` contains the `Command` ABC (interface), `ApplyTransactionCommand` (concrete command), and `CommandManager` (invoker). The Balance class acts as the receiver. See `main.py` for usage, where all transactions are applied and undone through the CommandManager.
 
 ## Trade-offs and Challenges
 

@@ -10,7 +10,6 @@ class Balance:
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            print("No instance exists yet")
             cls._instance = super().__new__(cls)
         return cls._instance    
 
@@ -27,6 +26,7 @@ class Balance:
     def reset(self):
         """Reset the net balance to zero."""
         self.balance = 0
+        self._observers = []
 
     def add_income(self, amount):
         """Add income to the balance."""
@@ -67,6 +67,5 @@ class Balance:
             self._observers.append(observer)
 
     def notify(self, transaction):
-        # TODO: Notify all observers
         for observer in self._observers:
             observer.update(self.balance, transaction)        
